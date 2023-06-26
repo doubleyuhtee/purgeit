@@ -25,6 +25,9 @@ if __name__ == '__main__':
         print("Any comments with '#' for content will be deleted.")
     else:
         print("clearing comments")
+    for s in reddit.redditor(username).submissions.new():
+        print(s.title)
+        s.delete()
     for c in reddit.redditor(username).comments.new(limit=None):
         if not c.body == "#":
             print(c.body)
