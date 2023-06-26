@@ -2,7 +2,6 @@ import praw
 from dotenv import load_dotenv
 import os
 
-
 load_dotenv()
 
 username = os.getenv('REDDITUSERNAME')
@@ -31,7 +30,8 @@ if __name__ == '__main__':
     for c in reddit.redditor(username).comments.new(limit=None):
         if not c.body == "#":
             print(c.body)
-            c.edit('#')
+            if "purgeit" not in c.body:
+                c.edit('#')
         else:
             print(".", end="")
             if deletepass:
