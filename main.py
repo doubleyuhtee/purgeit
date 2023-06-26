@@ -35,5 +35,4 @@ if __name__ == '__main__':
         else:
             print(".", end="")
             if deletepass:
-                print("oops")
-                # c.delete()
+                c.delete()
