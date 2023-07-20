@@ -27,12 +27,20 @@ if __name__ == '__main__':
     for s in reddit.redditor(username).submissions.new():
         print(s.title)
         s.delete()
-    for c in reddit.redditor(username).comments.new(limit=None):
-        if not c.body == "#":
-            print(c.body)
-            if "purgeit" not in c.body:
-                c.edit('#')
-        else:
-            print(".", end="")
-            if deletepass:
-                c.delete()
+    stuffdeleted = True
+    while stuffdeleted:
+        print("")
+        stuffdeleted = False
+        for c in reddit.redditor(username).comments.new(limit=None):
+            if not c.body == "#":
+                print(c.body)
+                if "purgeit" not in c.body:
+                    stuffdeleted = True
+                    c.edit('#')
+            else:
+                if deletepass:
+                    print("x", end="", flush=True)
+                    stuffdeleted = True
+                    c.delete()
+                else:
+                    print(".", end="", flush=True)
