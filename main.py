@@ -1,4 +1,5 @@
 import json
+import time
 
 import praw
 from dotenv import load_dotenv
@@ -6,7 +7,7 @@ import os
 
 load_dotenv()
 
-deletepass = os.getenv('RUN_DELETE', "false").lower() in ('true', "t")
+delete_age = (int)(os.getenv('PRESERVE_EDIT_DAYS', 90)) * 60 * 60 * 24
 use_troll_user_agent = os.getenv('FUCKWITHTHEMABIT', "false").lower() in ('true', "t")
 
 
@@ -33,10 +34,7 @@ if __name__ == '__main__':
             username=username,
         )
         print(f"Running as {user_agent}")
-        if deletepass:
-            print("Any comments with '#' for content will be deleted.")
-        else:
-            print("clearing comments")
+        print("clearing comments")
         for s in reddit.redditor(username).submissions.new():
             print(s.title)
             s.delete()
@@ -51,10 +49,13 @@ if __name__ == '__main__':
                         stuffdeleted = True
                         c.edit('#')
                 else:
-                    if deletepass:
-                        print("x", end="", flush=True)
-                        stuffdeleted = True
-                        c.delete()
+                    if c.edited:
+                        if c.edited < time.time() - delete_age:
+                            print("x", end="", flush=True)
+                            stuffdeleted = True
+                            c.delete()
+                        else:
+                            print(".", end="", flush=True)
                     else:
-                        print(".", end="", flush=True)
+                        print(",", end="", flush=True)
         print("")
